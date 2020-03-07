@@ -3,6 +3,9 @@ from flask import Flask, render_template, Response
 from multiprocessing import Process
 
 from camera_opencv import CameraOpenCV
+from camera_opencv import inputQueue
+from camera_opencv import outputQueue
+from camera_opencv import Queue_frame
 
 
 app = Flask(__name__)
@@ -23,6 +26,13 @@ def gen(camera):
 
 
 if __name__ == '__main__':
+    # construct a child process *indepedent* from our main process of
+    # execution
+    print("[INFO] starting process...")
+    p = Process(target=Queue_frame, args=(inputQueue, outputQueue))
+    p.daemon = True
+    p.start()
+
     app.run(host='0.0.0.0', threaded=True)
 
 
